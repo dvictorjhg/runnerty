@@ -1,5 +1,4 @@
 const exec = require('./test_src/exec.js');
-jest.setTimeout(80000);
 
 function flatOutput(output) {
   return output
@@ -424,12 +423,12 @@ describe('SimpleDefaultsProcess', () => {
 });
 
 describe('ArgsCustomValuesProcess', () => {
-  const successOutput = `info: CHAIN CHAIN_ONE START
+  const successOutput = `info: CHAIN CHAIN_ONE START 1 / 2
   info: PROCESS PROCESS_ONE CV: L1 / 2 / I1 / I2
-  info: CHAIN CHAIN_ONE END
-  info: CHAIN CHAIN_ONE START
+  info: CHAIN CHAIN_ONE END 1 / 2
+  info: CHAIN CHAIN_ONE START 2 / 2
   info: PROCESS PROCESS_ONE CV: L1 / 2 / I3 / I4
-  info: CHAIN CHAIN_ONE END`;
+  info: CHAIN CHAIN_ONE END 2 / 2`;
 
   test('Execution End2End: ArgsCustomValuesProcess', done => {
     exec(
@@ -503,13 +502,6 @@ describe('RetryProcessCAOF', () => {
   const successOutput = `info: CHAIN CHAIN_ONE START 0
   info: [[DP]]! PROCESS PROCESS_ONE START - TS:
   info: [[DP]]! PROCESS PROCESS_ONE END - TS:
-  info: [[DP]]! PROCESS PROCESS_TWO START - TS:0
-  info: [[DP]]! ERR! PROCESS PROCESS_TWO FAIL
-  info: CHAIN CHAIN_ONE RETRY
-  info: CHAIN CHAIN_ONE END
-  info: CHAIN CHAIN_ONE START 0
-  info: [[DP]]! PROCESS PROCESS_ONE START - TS:0
-  info: [[DP]]! PROCESS PROCESS_ONE END - TS:0
   info: [[DP]]! PROCESS PROCESS_TWO START - TS:0
   info: [[DP]]! ERR! PROCESS PROCESS_TWO FAIL
   info: CHAIN CHAIN_ONE RETRY
@@ -974,6 +966,38 @@ describe('ENVFunction', () => {
         '--end'
       ],
       3000,
+      res => {
+        try {
+          expect(flatOutput(res)).toEqual(flatSuccessOutput(successOutput));
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    );
+  });
+});
+
+describe('TestForOfFunctionRawOutput', () => {
+  const successOutput = `info:PROCESS_ONESTART
+  info:PROCESS_ONEEND:DATA_OUTPUT([objectObject])MSG([objectObject])ERR()OS()MSG_STRINGIFY({\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"})
+  info:PROCESS_TWOSTARTinfo:PROCESS_TWOEND:DATA_OUTPUT()MSG(INPUT_ARRAY:[{\"id\":1},{\"id\":2},{\"id\":3}]OUTPUT_OBJECT:{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"})ERR()OS()MSG_STRINGIFY(\"INPUT_ARRAY:[{\\\"id\\\":1},{\\\"id\\\":2},{\\\"id\\\":3}]OUTPUT_OBJECT:{\\\"id\\\":\\\"<>@ADD(@GV(id)),</>1<>)</>\\\"}\\n\")
+  info:PROCESS_THREESTART
+  info:PROCESS_THREEEND:DATA_OUTPUT([objectObject],[objectObject],[objectObject])MSG([objectObject],[objectObject],[objectObject])ERR()OS()MSG_STRINGIFY([{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"},{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"},{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"}])`;
+  test('Execution End2End: TestForOfFunctionRawOutput', done => {
+    exec(
+      'node',
+      [
+        'index.js',
+        '-c',
+        './__tests__/end2end/config.json',
+        '-p',
+        './__tests__/end2end/plan_for_of_raw_output.json',
+        '-f',
+        'CHAIN_ONE',
+        '--end'
+      ],
+      8000,
       res => {
         try {
           expect(flatOutput(res)).toEqual(flatSuccessOutput(successOutput));

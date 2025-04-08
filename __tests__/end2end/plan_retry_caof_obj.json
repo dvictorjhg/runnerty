@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/runnerty/schemas/master/schemas/3.5/plan.json",
+  "$schema": "file:/Users/codertydev/workspace/runnerty/schemas/schemas/4.0/plan.json",
   "chains": [
     {
       "id": "CHAIN_ONE",
@@ -95,7 +95,7 @@
         },
         {
           "id": "PROCESS_TWO",
-          "name": "only if the value from process one is greater than 8 ",
+          "name": "PROCESS_TWO",
           "depends_process": "PROCESS_ONE",
           "chain_action_on_fail": "retry",
           "exec": {

@@ -1,24 +1,22 @@
 'use strict';
 
-const spawn = require('child_process').spawn;
+const { spawn } = require('node:child_process');
 
 function _exec(cmd, args, timeOut, callback) {
   let stdout = '';
 
-  const shell = spawn(cmd, args, { shell: true });
-
-  if (timeOut) {
-    setTimeout(() => {
-      shell.kill();
-      callback(stdout.toString());
-    }, timeOut);
-  }
+  const shell = spawn(cmd, args, { shell: true, timeout: timeOut });
 
   shell.stdout.on('data', chunk => {
     stdout += chunk;
   });
 
-  shell.on('close', (code, signal) => {
+  shell.stderr.on('data', data => {
+    // eslint-disable-next-line no-console
+    console.error(`stderr: ${data}`);
+  });
+
+  shell.on('close', () => {
     callback(stdout.toString());
   });
 }

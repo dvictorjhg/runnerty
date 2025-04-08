@@ -1,0 +1,82 @@
+{
+  "$schema": "file:/Users/codertydev/workspace/runnerty/schemas/schemas/4.0/plan.json",
+  "chains": [
+    {
+      "id": "CHAIN_ONE",
+      "name": "CHAIN_ONE",
+      "defaults_processes": {
+        "notifications": {
+          "on_start": [
+            {
+              "id": "console_default",
+              "message": "@GV(PROCESS_ID) START"
+            }
+          ],
+          "on_fail": [
+            {
+              "id": "console_default",
+              "message": "@GV(PROCESS_ID) FAIL: DATA_OUTPUT(@GV(PROCESS_EXEC_DATA_OUTPUT)) MSG(@GV(PROCESS_EXEC_MSG_OUTPUT)) ERR(@GV(PROCESS_EXEC_ERR_OUTPUT)) OS(@GV(PROCESS_EXEC_OUTPUT_SHARE)) MSG_STRINGIFY(@STRINGIFY(@GV(PROCESS_EXEC_MSG_OUTPUT)))"
+            }
+          ],
+          "on_end": [
+            {
+              "id": "console_default",
+              "message": "@GV(PROCESS_ID) END: DATA_OUTPUT(@GV(PROCESS_EXEC_DATA_OUTPUT)) MSG(@GV(PROCESS_EXEC_MSG_OUTPUT)) ERR(@GV(PROCESS_EXEC_ERR_OUTPUT)) OS(@GV(PROCESS_EXEC_OUTPUT_SHARE)) MSG_STRINGIFY(@STRINGIFY(@GV(PROCESS_EXEC_MSG_OUTPUT)))"
+            }
+          ]
+        }
+      },
+      "custom_values": {
+        "ONE": 1,
+        "INPUT_ARRAY": [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          },
+          {
+            "id": 3
+          }
+        ]
+      },
+      "processes": [
+        {
+          "id": "PROCESS_ONE",
+          "name": "PROCESS_ONE",
+          "exec": {
+            "id": "wait_default",
+            "time": "0s",
+            "output": { "id": "<>@ADD(@GV(id)),</>@GV(ONE)<>)</>" }
+          },
+          "output_share": [
+            {
+              "key": "OUTPUT",
+              "name": "OBJECT",
+              "value": "@GV(PROCESS_EXEC_DATA_OUTPUT)"
+            }
+          ]
+        },
+        {
+          "id": "PROCESS_TWO",
+          "name": "PROCESS_TWO",
+          "depends_process": "PROCESS_ONE",
+          "exec": {
+            "id": "shell_default",
+            "command": "echo 'INPUT_ARRAY: @JSONSTRINGIFY(@GV(INPUT_ARRAY)) OUTPUT_OBJECT: @JSONSTRINGIFY(@GV(OUTPUT_OBJECT))'"
+          }
+        },
+        {
+          "id": "PROCESS_THREE",
+          "name": "PROCESS_THREE",
+          "depends_process": "PROCESS_TWO",
+          "exec": {
+            "id": "wait_default",
+            "time": "0s",
+            "output": "@FOROF(@GV(INPUT_ARRAY), @GV(OUTPUT_OBJECT))"
+          }
+        }
+      ]
+    }
+  ]
+}

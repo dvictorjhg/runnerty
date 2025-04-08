@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/runnerty/schemas/master/schemas/3.5/plan.json",
+  "$schema": "file:/Users/codertydev/workspace/runnerty/schemas/schemas/4.0/plan.json",
   "chains": [
     {
       "id": "CHAIN-ONE",
