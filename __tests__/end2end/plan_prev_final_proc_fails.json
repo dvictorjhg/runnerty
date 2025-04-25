@@ -58,7 +58,7 @@
           "name": "P-1",
           "exec": {
             "id": "wait_default",
-            "time": "0"
+            "time": "0s"
           }
         },
         {
@@ -68,7 +68,7 @@
           "chain_action_on_fail": "abort",
           "exec": {
             "id": "wait_default",
-            "time": "0",
+            "time": "0s",
             "error": "MSG ERROR"
           }
         },
@@ -78,7 +78,7 @@
           "depends_process": ["P-2"],
           "exec": {
             "id": "wait_default",
-            "time": "0"
+            "time": "0s"
           }
         }
       ]

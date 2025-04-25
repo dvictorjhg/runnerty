@@ -980,10 +980,7 @@ describe('ENVFunction', () => {
 
 describe('TestForOfFunctionRawOutput', () => {
   const successOutput = `info:PROCESS_ONESTART
-  info:PROCESS_ONEEND:DATA_OUTPUT([objectObject])MSG([objectObject])ERR()OS()MSG_STRINGIFY({\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"})
-  info:PROCESS_TWOSTARTinfo:PROCESS_TWOEND:DATA_OUTPUT()MSG(INPUT_ARRAY:[{\"id\":1},{\"id\":2},{\"id\":3}]OUTPUT_OBJECT:{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"})ERR()OS()MSG_STRINGIFY(\"INPUT_ARRAY:[{\\\"id\\\":1},{\\\"id\\\":2},{\\\"id\\\":3}]OUTPUT_OBJECT:{\\\"id\\\":\\\"<>@ADD(@GV(id)),</>1<>)</>\\\"}\\n\")
-  info:PROCESS_THREESTART
-  info:PROCESS_THREEEND:DATA_OUTPUT([objectObject],[objectObject],[objectObject])MSG([objectObject],[objectObject],[objectObject])ERR()OS()MSG_STRINGIFY([{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"},{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"},{\"id\":\"<>@ADD(@GV(id)),</>1<>)</>\"}])`;
+  info:PROCESS_ONEEND:DATA_OUTPUT([objectObject],[objectObject],[objectObject])MSG([objectObject],[objectObject],[objectObject])ERR()OS()MSG_STRINGIFY([{"id":2},{"id":3},{"id":4}])`;
   test('Execution End2End: TestForOfFunctionRawOutput', done => {
     exec(
       'node',
@@ -993,6 +990,39 @@ describe('TestForOfFunctionRawOutput', () => {
         './__tests__/end2end/config.json',
         '-p',
         './__tests__/end2end/plan_for_of_raw_output.json',
+        '-f',
+        'CHAIN_ONE',
+        '--end'
+      ],
+      8000,
+      res => {
+        try {
+          expect(flatOutput(res)).toEqual(flatSuccessOutput(successOutput));
+          done();
+        } catch (error) {
+          done(error);
+        }
+      }
+    );
+  });
+});
+
+describe('TestTemplates', () => {
+  const successOutput = `info: PROCESS_ONE START
+info: PROCESS_ONE END: DATA_OUTPUT([object Object])MSG([object Object])ERR()OS()MSG_STRINGIFY({"id":"<>@ADD(@GV(id), </>1<>)</>"})
+info: PROCESS_TWO START
+info: PROCESS_TWO END: DATA_OUTPUT()MSG(INPUT_ARRAY: [{"id":1},{"id":2},{"id":3}] OUTPUT_OBJECT: {"id":"@ADD(@GV(id), 1)"})ERR()OS()MSG_STRINGIFY("INPUT_ARRAY: [{\\"id\\":1},{\\"id\\":2},{\\"id\\":3}] OUTPUT_OBJECT: {\\"id\\":\\"@ADD(@GV(id), 1)\\"}\\n")
+info: PROCESS_THREE START
+info: PROCESS_THREE END: DATA_OUTPUT([object Object],[object Object],[object Object])MSG([object Object],[object Object],[object Object])ERR()OS()MSG_STRINGIFY([{"id":2},{"id":3},{"id":4}])`;
+  test('Execution End2End: TestTemplates', done => {
+    exec(
+      'node',
+      [
+        'index.js',
+        '-c',
+        './__tests__/end2end/config.json',
+        '-p',
+        './__tests__/end2end/plan_templates.json',
         '-f',
         'CHAIN_ONE',
         '--end'

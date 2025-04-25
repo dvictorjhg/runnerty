@@ -47,7 +47,33 @@
           "exec": {
             "id": "wait_default",
             "time": "0s",
-            "output": "@FOROF(@GV(INPUT_ARRAY), <>{ \"id\": \"@ADD(@GV(id), @GV(ONE))\" }</>)"
+            "output": { "id": "<><>@ADD(@GV(id), </></>@GV(ONE)<><>)</></>" }
+          },
+          "output_share": [
+            {
+              "key": "OUTPUT",
+              "name": "OBJECT",
+              "value": "@GV(PROCESS_EXEC_DATA_OUTPUT)"
+            }
+          ]
+        },
+        {
+          "id": "PROCESS_TWO",
+          "name": "PROCESS_TWO",
+          "depends_process": "PROCESS_ONE",
+          "exec": {
+            "id": "shell_default",
+            "command": "echo 'INPUT_ARRAY: @JSONSTRINGIFY(@GV(INPUT_ARRAY)) OUTPUT_OBJECT: @JSONSTRINGIFY(@GV(OUTPUT_OBJECT))'"
+          }
+        },
+        {
+          "id": "PROCESS_THREE",
+          "name": "PROCESS_THREE",
+          "depends_process": "PROCESS_TWO",
+          "exec": {
+            "id": "wait_default",
+            "time": "0s",
+            "output": "@FOROF(@GV(INPUT_ARRAY), @GV(OUTPUT_OBJECT))"
           }
         }
       ]

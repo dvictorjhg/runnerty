@@ -91,7 +91,7 @@
           "depends_process": ["C1_P1"],
           "exec": {
             "id": "wait_default",
-            "time": "5",
+            "time": "5ms",
             "_error": "Caused error for testing"
           }
         }
@@ -163,7 +163,7 @@
           "name": "C2-P1",
           "exec": {
             "id": "wait_default",
-            "time": "5"
+            "time": "5ms"
           }
         }
       ]
